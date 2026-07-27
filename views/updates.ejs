@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upskilling Updates - Hackathon Team Hub</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a2e; color: #fff; margin: 0; padding: 2rem; }
+        .container { max-width: 800px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; }
+        h1 { color: #0fb9b1; margin: 0; }
+        nav a { color: #fff; text-decoration: none; margin-left: 1.5rem; font-weight: bold; transition: color 0.3s; }
+        nav a:hover { color: #ff6b81; }
+        
+        .error { color: #ff6b6b; margin-bottom: 1rem; background: rgba(255, 107, 107, 0.1); padding: 0.5rem; border-radius: 4px; }
+        .success { color: #4cd137; margin-bottom: 1rem; background: rgba(76, 209, 55, 0.1); padding: 0.5rem; border-radius: 4px; }
+
+        .form-container { background: #16213e; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .form-container h2 { margin-top: 0; color: #0fb9b1; font-size: 1.25rem; }
+        textarea { width: 100%; padding: 0.75rem; border: 1px solid #0f3460; border-radius: 6px; box-sizing: border-box; background: #0f3460; color: #fff; outline: none; font-size: 1rem; resize: vertical; min-height: 80px; margin-bottom: 1rem; transition: border-color 0.3s; }
+        textarea:focus { border-color: #0fb9b1; }
+        button { padding: 0.75rem 1.5rem; background: #0fb9b1; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.3s; }
+        button:hover { background: #0c968f; }
+
+        .update { background: #16213e; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.2); border-left: 4px solid #0fb9b1; }
+        .update-header { display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.9rem; color: #a9a9a9; }
+        .update-author { font-weight: bold; color: #fff; }
+        .role-badge { font-size: 0.75rem; padding: 0.1rem 0.3rem; border-radius: 4px; margin-left: 0.5rem; }
+        .role-admin { color: #eccc68; border: 1px solid #eccc68; }
+        .update-content { line-height: 1.5; white-space: pre-wrap; font-size: 1.05rem; }
+        .no-updates { text-align: center; color: #a9a9a9; margin-top: 2rem; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Upskilling Updates</h1>
+            <nav>
+                <a href="/dashboard">Dashboard</a>
+                <% if (currentRole === 'admin') { %>
+                    <a href="/admin">Admin Panel</a>
+                <% } %>
+                <a href="/broadcasts">Broadcasts</a>
+                <a href="/chat">Chat</a>
+                <a href="/logout">Logout</a>
+            </nav>
+        </header>
+
+        <% if (error) { %> <div class="error"><%= error %></div> <% } %>
+        <% if (success) { %> <div class="success"><%= success %></div> <% } %>
+
+        <div class="form-container">
+            <h2>Log Your Progress</h2>
+            <form action="/updates" method="POST">
+                <textarea name="content" placeholder="What did you learn or build today?" required></textarea>
+                <button type="submit">Post Update</button>
+            </form>
+        </div>
+
+        <div class="updates-list">
+            <% if (updates.length === 0) { %>
+                <div class="no-updates">No updates have been posted yet. Be the first!</div>
+            <% } else { %>
+                <% updates.forEach(update => { %>
+                    <div class="update">
+                        <div class="update-header">
+                            <div>
+                                <span class="update-author"><%= update.username %></span>
+                                <% if (update.role === 'admin') { %>
+                                    <span class="role-badge role-admin">ADMIN</span>
+                                <% } %>
+                            </div>
+                            <div><%= new Date(update.timestamp).toLocaleString() %></div>
+                        </div>
+                        <div class="update-content"><%= update.content %></div>
+                    </div>
+                <% }) %>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html>

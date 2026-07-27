@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Hackathon Team Hub</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a2e; color: #fff; margin: 0; padding: 2rem; }
+        .container { max-width: 800px; margin: 0 auto; background: #16213e; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        h1, h2 { color: #e94560; margin-top: 0;}
+        .error { color: #ff6b6b; margin-bottom: 1rem; background: rgba(255, 107, 107, 0.1); padding: 0.5rem; border-radius: 4px; }
+        .success { color: #4cd137; margin-bottom: 1rem; background: rgba(76, 209, 55, 0.1); padding: 0.5rem; border-radius: 4px; }
+        form { margin-bottom: 2rem; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; color: #a9a9a9; font-size: 0.9rem;}
+        input[type="text"], input[type="password"] { width: 100%; padding: 0.75rem; border: 1px solid #0f3460; border-radius: 6px; box-sizing: border-box; background: #0f3460; color: #fff; outline: none; transition: border-color 0.3s;}
+        input:focus { border-color: #e94560; }
+        button { padding: 0.75rem 1.5rem; background: #e94560; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.3s; }
+        button:hover { background: #d03050; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; background: #0f3460; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 1rem; text-align: left; }
+        th { background: #e94560; color: #fff; }
+        tr:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .actions { display: flex; gap: 0.5rem; }
+        .btn-small { padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 4px; }
+        .btn-danger { background: #ff4757; }
+        .btn-danger:hover { background: #ff6b81; }
+        .btn-warning { background: #ffa502; color: #000; }
+        .btn-warning:hover { background: #eccc68; }
+        nav { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        nav a { color: #e94560; text-decoration: none; margin-right: 1.5rem; font-weight: bold; transition: color 0.3s; }
+        nav a:hover { color: #ff6b81; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/logout">Logout</a>
+        </nav>
+        <h1>Admin Panel</h1>
+        
+        <% if (error) { %> <div class="error"><%= error %></div> <% } %>
+        <% if (success) { %> <div class="success"><%= success %></div> <% } %>
+
+        <h2>Add New Member</h2>
+        <form action="/admin/add" method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Add Member</button>
+        </form>
+
+        <h2>Manage Members</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(user => { %>
+                    <tr>
+                        <td><%= user.id %></td>
+                        <td><%= user.username %></td>
+                        <td>
+                            <span style="color: <%= user.role === 'admin' ? '#eccc68' : '#a9a9a9' %>;">
+                                <%= user.role.toUpperCase() %>
+                            </span>
+                        </td>
+                        <td class="actions">
+                            <% if (user.id !== currentUserId) { %>
+                                <form action="/admin/remove" method="POST" style="margin:0; display:inline;">
+                                    <input type="hidden" name="userId" value="<%= user.id %>">
+                                    <button type="submit" class="btn-small btn-danger" onclick="return confirm('Are you sure you want to remove this member?');">Remove</button>
+                                </form>
+                                <% if (user.role === 'member') { %>
+                                <form action="/admin/transfer" method="POST" style="margin:0; display:inline;">
+                                    <input type="hidden" name="newAdminId" value="<%= user.id %>">
+                                    <button type="submit" class="btn-small btn-warning" onclick="return confirm('Transfer your admin rights? You will become a regular member.');">Make Admin</button>
+                                </form>
+                                <% } %>
+                            <% } else { %>
+                                <span style="font-size: 0.85rem; color: #a9a9a9; font-style: italic;">(You)</span>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

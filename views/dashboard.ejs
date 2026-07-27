@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Hackathon Team Hub</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a2e; color: #fff; margin: 0; padding: 2rem; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; }
+        h1 { color: #0fb9b1; margin: 0; }
+        nav { display: flex; align-items: center; gap: 1.5rem; }
+        nav span { color: #a9a9a9; }
+        nav a { color: #fff; text-decoration: none; font-weight: bold; transition: color 0.3s; }
+        nav a:hover { color: #ff6b81; }
+        
+        .main-content { display: flex; gap: 2rem; flex-wrap: wrap; }
+        
+        .quick-links { flex: 1; min-width: 400px; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .card { background: #16213e; padding: 2rem; border-radius: 12px; text-align: center; text-decoration: none; color: #fff; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border-top: 4px solid #0fb9b1; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .card h2 { margin: 0 0 0.5rem 0; color: #fff; }
+        .card p { margin: 0; color: #a9a9a9; font-size: 0.9rem; }
+        .card.admin-card { border-top: 4px solid #eccc68; }
+        .card.chat-card { border-top: 4px solid #e94560; }
+        .card.broadcasts-card { border-top: 4px solid #3498db; }
+
+        .members-sidebar { flex: 0 0 320px; background: #0f3460; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .members-sidebar h2 { margin-top: 0; color: #0fb9b1; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; }
+        .member-list { list-style: none; padding: 0; margin: 0; }
+        .member-item { padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .member-item:last-child { border-bottom: none; }
+        .role-badge { font-size: 0.7rem; padding: 0.2rem 0.4rem; border-radius: 4px; font-weight: bold; }
+        .role-admin { color: #eccc68; background: rgba(236, 204, 104, 0.1); border: 1px solid #eccc68; }
+        .role-member { color: #a9a9a9; background: rgba(169, 169, 169, 0.1); border: 1px solid #a9a9a9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Dashboard</h1>
+            <nav>
+                <span>Welcome, <strong><%= username || 'User' %></strong></span>
+                <a href="/logout">Logout</a>
+            </nav>
+        </header>
+
+        <div class="main-content">
+            <div class="quick-links">
+                <a href="/chat" class="card chat-card">
+                    <h2>Live Chat</h2>
+                    <p>Discuss ideas with the team</p>
+                </a>
+                <a href="/updates" class="card">
+                    <h2>Updates</h2>
+                    <p>Log your upskilling progress</p>
+                </a>
+                <a href="/broadcasts" class="card broadcasts-card">
+                    <h2>Broadcasts</h2>
+                    <p>Read important announcements</p>
+                </a>
+                <% if (currentRole === 'admin') { %>
+                <a href="/admin" class="card admin-card">
+                    <h2>Admin Panel</h2>
+                    <p>Manage team members</p>
+                </a>
+                <% } %>
+            </div>
+
+            <div class="members-sidebar">
+                <h2>Team Members (<%= members.length %>)</h2>
+                <ul class="member-list">
+                    <% members.forEach(member => { %>
+                        <li class="member-item">
+                            <span><%= member.username %></span>
+                            <span class="role-badge role-<%= member.role %>"><%= member.role.toUpperCase() %></span>
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

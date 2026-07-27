@@ -41,4 +41,44 @@ router.get('/logout', (req, res) => {
     });
 });
 
+// Handle change password for logged-in user
+router.post('/change-password', async (req, res) => {
+    if (!req.session.userId) {
+        return res.redirect('/login');
+    }
+
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+    const userId = req.session.userId;
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        return res.redirect('/dashboard?error=' + encodeURIComponent('All password fields are required'));
+    }
+
+    if (newPassword !== confirmPassword) {
+        return res.redirect('/dashboard?error=' + encodeURIComponent('New passwords do not match'));
+    }
+
+    if (newPassword.length < 6) {
+        return res.redirect('/dashboard?error=' + encodeURIComponent('New password must be at least 6 characters long'));
+    }
+
+    try {
+        const stmt = db.prepare('SELECT password FROM users WHERE id = ?');
+        const user = stmt.get(userId);
+
+        if (!user || !(await bcrypt.compare(currentPassword, user.password))) {
+            return res.redirect('/dashboard?error=' + encodeURIComponent('Current password is incorrect'));
+        }
+
+        const hashed = await bcrypt.hash(newPassword, 10);
+        const updateStmt = db.prepare('UPDATE users SET password = ? WHERE id = ?');
+        updateStmt.run(hashed, userId);
+
+        return res.redirect('/dashboard?success=' + encodeURIComponent('Password changed successfully'));
+    } catch (error) {
+        console.error(error);
+        return res.redirect('/dashboard?error=' + encodeURIComponent('An error occurred while updating password'));
+    }
+});
+
 module.exports = router;

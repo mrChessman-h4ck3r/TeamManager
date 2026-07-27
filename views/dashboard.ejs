@@ -45,6 +45,17 @@
             </nav>
         </header>
 
+        <% if (error) { %>
+            <div style="background: rgba(233, 69, 96, 0.2); border: 1px solid #e94560; color: #ff6b81; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                <%= error %>
+            </div>
+        <% } %>
+        <% if (success) { %>
+            <div style="background: rgba(15, 185, 177, 0.2); border: 1px solid #0fb9b1; color: #0fb9b1; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                <%= success %>
+            </div>
+        <% } %>
+
         <div class="main-content">
             <div class="quick-links">
                 <a href="/chat" class="card chat-card">
@@ -65,6 +76,26 @@
                     <p>Manage team members</p>
                 </a>
                 <% } %>
+
+                <div class="card password-card" style="text-align: left; grid-column: 1 / -1; border-top: 4px solid #a55eea;">
+                    <h2 style="color: #a55eea; font-size: 1.3rem; margin-bottom: 0.5rem;">Change Password</h2>
+                    <p style="margin-bottom: 1rem;">Update your account password</p>
+                    <form action="/change-password" method="POST" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+                        <div style="flex: 1; min-width: 180px;">
+                            <label style="display: block; font-size: 0.8rem; color: #a9a9a9; margin-bottom: 0.25rem;">Current Password</label>
+                            <input type="password" name="currentPassword" required style="width: 100%; padding: 0.6rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: #0f172a; color: #fff; box-sizing: border-box;">
+                        </div>
+                        <div style="flex: 1; min-width: 180px;">
+                            <label style="display: block; font-size: 0.8rem; color: #a9a9a9; margin-bottom: 0.25rem;">New Password</label>
+                            <input type="password" name="newPassword" required minlength="6" style="width: 100%; padding: 0.6rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: #0f172a; color: #fff; box-sizing: border-box;">
+                        </div>
+                        <div style="flex: 1; min-width: 180px;">
+                            <label style="display: block; font-size: 0.8rem; color: #a9a9a9; margin-bottom: 0.25rem;">Confirm New Password</label>
+                            <input type="password" name="confirmPassword" required minlength="6" style="width: 100%; padding: 0.6rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: #0f172a; color: #fff; box-sizing: border-box;">
+                        </div>
+                        <button type="submit" style="padding: 0.6rem 1.2rem; border-radius: 6px; border: none; background: #a55eea; color: #fff; font-weight: bold; cursor: pointer; height: 38px; white-space: nowrap;">Update Password</button>
+                    </form>
+                </div>
             </div>
 
             <div class="members-sidebar">
